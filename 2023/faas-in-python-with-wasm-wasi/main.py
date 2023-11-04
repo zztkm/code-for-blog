@@ -1,8 +1,7 @@
 """FastAPI で wasm (wasi) を実行して wasi の出力を返すサンプル."""
 import logging
-from pathlib import Path
-from tempfile import NamedTemporaryFile
 
+from aiofiles import tempfile
 from fastapi import FastAPI, HTTPException
 from wasmtime import Engine, Linker, Module, Store, WasiConfig, WasmtimeError
 
@@ -30,27 +29,27 @@ async def execute(funcname: str) -> dict[str, str]:
 
     config = WasiConfig()
     # generate tenmporary file for stdout
-    f = NamedTemporaryFile()
-    config.stdout_file = Path(f.name)
-    config.env = [["NAME", "zztkm"]]
+    async with tempfile.NamedTemporaryFile() as f:
+        config.stdout_file = f.name
+        config.env = [["NAME", "zztkm"]]
 
-    store = Store(linker.engine)
-    store.set_wasi(config)
+        store = Store(linker.engine)
+        store.set_wasi(config)
 
-    instance = linker.instantiate(store, module)
+        instance = linker.instantiate(store, module)
 
-    start = instance.exports(store)["_start"]
+        start = instance.exports(store)["_start"]
 
-    try:
-        start(store)
-        f.seek(0)
-        out = f.read()
-        return {"hello": out.decode(encoding="utf-8")}
-    except WasmtimeError as e:
-        logger.debug(e)
-        f.seek(0)
-        out = f.read()
-        return {"hello": out.decode(encoding="utf-8")}
-    except Exception:
-        logger.exception("error")
-        raise HTTPException(status_code=500, detail="Internal Server Error") from None
+        try:
+            start(store)
+            await f.seek(0)
+            out = await f.read()
+            return {"hello": out.decode(encoding="utf-8")}
+        except WasmtimeError as e:
+            logger.debug(e)
+            await f.seek(0)
+            out = await f.read()
+            return {"hello": out.decode(encoding="utf-8")}
+        except Exception:
+            logger.exception("error")
+            raise HTTPException(status_code=500, detail="Internal Server Error") from None

@@ -9,6 +9,7 @@ dependencies = [
     "fastapi>=0.104.1",
     "uvicorn[standard]>=0.23.2",
     "wasmtime>=14.0.0",
+    "aiofiles>=23.2.1",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"
