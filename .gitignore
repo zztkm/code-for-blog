@@ -1,0 +1,5 @@
+# for python
+venv
+.venv
+__pycache__
+
