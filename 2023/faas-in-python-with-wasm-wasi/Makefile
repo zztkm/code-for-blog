@@ -14,3 +14,7 @@ lint:
 .PHONY: fix
 fix:
 	rye run ruff check --fix .
+
+.PHONY: build
+build:
+	GOOS=wasip1 GOARCH=wasm go build -o ./functions/gojson.wasm ./gojson/main.go
