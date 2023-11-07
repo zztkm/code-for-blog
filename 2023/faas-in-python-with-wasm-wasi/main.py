@@ -70,11 +70,11 @@ async def invoke_wasm_module(modname: str, wasm_path: str, input_data: dict[str,
         logger.info("start wasm module %s", modname)
         try:
             start(store)
-            await f.seek(0)
+            #await f.seek(0)
             out = await f.read()
             return json.loads(out.decode(encoding="utf-8"))
         except WasmtimeError as e:
             logger.debug(e)
-            await f.seek(0)
+            #await f.seek(0)
             out = await f.read()
             return json.loads(out.decode(encoding="utf-8"))
