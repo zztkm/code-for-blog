@@ -1,6 +1,12 @@
+import os
+
 import pytest
 from sqlalchemy import Engine, create_engine
 from testcontainers.mysql import MySqlContainer
+
+
+def pytest_generate_tests(metafunc):
+    os.environ["TC_HOST"] = "localhost"
 
 
 @pytest.fixture(scope="session")
@@ -14,7 +20,8 @@ def mysql() -> MySqlContainer:
     mysql = MySqlContainer(
         image="mysql:8.2.0",
     )
-    return mysql.start()
+    mysql.start()
+    return mysql
     # NOTE: pytestが正常に終了したら、自動的に停止します。
 
 
