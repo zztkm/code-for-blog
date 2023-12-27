@@ -1,11 +1,22 @@
 [project]
-name = "pytest-with-testcontainers"
+name = "shigureni"
 version = "0.1.0"
-description = "Add your description here"
-authors = [{ name = "zztkm", email = "zztkm@tsurutatakumi.info" }]
-dependencies = []
+description = "udonya web api"
+authors = [
+    { name = "zztkm", email = "zztkm@tsurutatakumi.info" }
+]
+dependencies = [
+    "SQLAlchemy>=2.0.23",
+    "cryptography>=41.0.7",
+    "fastapi>=0.105.0",
+    "uvicorn[standard]>=0.25.0",
+    "pymysql>=1.1.0",
+]
 readme = "README.md"
-requires-python = ">= 3.8"
+requires-python = ">= 3.11"
+
+[project.scripts]
+hello = "pytest_with_testcontainers:hello"
 
 [build-system]
 requires = ["hatchling"]
@@ -14,12 +25,19 @@ build-backend = "hatchling.build"
 [tool.rye]
 managed = true
 dev-dependencies = [
+    "ruff>=0.1.8",
     "testcontainers>=3.7.1",
-    "PyMySQL>=1.1.0",
     "pytest>=7.4.3",
-    "SQLAlchemy>=2.0.23",
-    "ruff>=0.1.4",
+    "sqlacodegen==3.0.0rc3",
+    "factory_boy>=3.3.0",
+    "httpx>=0.26.0",
 ]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pytest_with_testcontainers"]
 
 [tool.rye.scripts]
 lint = "ruff check ."
@@ -27,8 +45,9 @@ fix = "ruff check --fix ."
 fmt = "ruff format ."
 test = "pytest -v -vv tests"
 
-[tool.hatch.metadata]
-allow-direct-references = true
+# run uvicorn server
+dev = "python src/main.py dev"
+prod = "python src/main.py prod"
 
 [tool.ruff]
 exclude = [".venv", ".git", ".eggs", "venv", "__pypackages__"]
