@@ -1,27 +1,49 @@
 # pytest-with-testcontainers
 
 
-## Run test
+## Requirements
 
-init database image
-```bash
-make image
-```
+- Docker (Docker Compose)
+- [Rye](https://rye-up.com/)
+
+## Run dev server
 
 ```bash
+# up db
+make up
+
 # install dependencies
 rye sync --no-lock
+
+# run dev server (hot reload)
+rye run dev
+```
+
+When you want to migrate the development database, please edit the `schema.sql`, confirm the changes with following command.
+
+```bash
+make migrate-dry
+```
+
+If everything is fine, please go ahead and execute make migrate.
+
+```bash
+make migrate
+```
+
+## Run test
+
+```bash
+# init database image
+make image
 
 # run tests
 rye run test
 ```
 
-## model 生成
+## Generate model
 
 ```bash
-# install tool
-rye install sqlacodegen
-
 # up db
 make up
 

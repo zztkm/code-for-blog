@@ -1,9 +1,10 @@
 from pydantic import BaseModel, ConfigDict
 
+
 class Menus(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
-    id: int
+    code: str
     name: str
     price: int
     description: str
@@ -11,5 +12,11 @@ class Menus(BaseModel):
 
 class MenusCreate(BaseModel):
     name: str
+    code: str
+    price: int
+    description: str
+
+
+class MenusUpdate(BaseModel):
     price: int
     description: str

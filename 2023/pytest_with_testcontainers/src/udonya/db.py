@@ -1,5 +1,5 @@
-from sqlalchemy import URL, create_engine, Engine
-from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy import URL, Engine, create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 
 def create_db_url() -> URL:
@@ -9,7 +9,7 @@ def create_db_url() -> URL:
         password="mysql",
         host="localhost",
         port=3306,
-        database="db"
+        database="db",
     )
 
 
@@ -23,4 +23,3 @@ def create_session(engine: Engine):
 
 SessionLocalFactory = create_session(create_db_engine(create_db_url()))
 SessionLocal = scoped_session(SessionLocalFactory)
-

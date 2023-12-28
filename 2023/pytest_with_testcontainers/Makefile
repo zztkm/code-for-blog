@@ -18,12 +18,15 @@ model:
 	rye run sqlacodegen --generator declarative --outfile src/udonya/gen/sqlacodegen/models.py mysql+pymysql://mysql:mysql@localhost/db
 
 .PHONY: dry
-dry: $(GOBIN)/mysqldef
+migrate-dry: $(GOBIN)/mysqldef
 	mysqldef --user=mysql --password=mysql db --dry-run < schema.sql
 
-.PHONY: migrate
-migrate: $(GOBIN)/mysqldef
+.PHONY: run-migrate
+run-migrate: $(GOBIN)/mysqldef
 	mysqldef --user=mysql --password=mysql db < schema.sql
+
+.PHONY: migrate
+migrate: run-migrate model
 
 $(GOBIN)/mysqldef:
 	go install github.com/sqldef/sqldef/cmd/mysqldef@latest

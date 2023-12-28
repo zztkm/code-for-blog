@@ -2,9 +2,7 @@
 name = "shigureni"
 version = "0.1.0"
 description = "udonya web api"
-authors = [
-    { name = "zztkm", email = "zztkm@tsurutatakumi.info" }
-]
+authors = [{ name = "zztkm", email = "zztkm@tsurutatakumi.info" }]
 dependencies = [
     "SQLAlchemy>=2.0.23",
     "cryptography>=41.0.7",
@@ -37,7 +35,7 @@ dev-dependencies = [
 allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/pytest_with_testcontainers"]
+packages = ["src/udonya"]
 
 [tool.rye.scripts]
 lint = "ruff check ."

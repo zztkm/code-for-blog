@@ -1,15 +1,19 @@
+from collections.abc import Generator
 from uuid import uuid4
-from typing import Generator
+
+import pytest
+from sqlalchemy import Engine, create_engine
+from sqlalchemy.orm import Session, scoped_session, sessionmaker
+from testcontainers.mysql import MySqlContainer
 
 from src.udonya import app, get_db
 
 from .factories import MenusFactory
 
-import pytest
-from sqlalchemy import Engine, create_engine
-from sqlalchemy.orm import sessionmaker, Session, scoped_session
-from testcontainers.mysql import MySqlContainer
 
+class TestingSession(Session):
+    def commit(self):
+        self.flush()
 
 @pytest.fixture(scope="session")
 def mysql() -> MySqlContainer:
@@ -66,7 +70,7 @@ def connection(engine: Engine):
 
 @pytest.fixture(scope="session")
 def create_session_factory(engine: Engine):
-    return sessionmaker(bind=engine, autocommit=False, autoflush=False)
+    return sessionmaker(bind=engine, autocommit=False, autoflush=True, class_=TestingSession)
 
 
 @pytest.fixture()
@@ -80,10 +84,11 @@ def test_db(create_session_factory: sessionmaker[Session]) -> Generator[Session,
         try:
             yield session
         finally:
-            session.close()
-    app.dependency_overrides[get_db] = override_get_db 
+            pass
 
-    yield session 
+    app.dependency_overrides[get_db] = override_get_db
+
+    yield session
 
     session.rollback()
     session.close()
